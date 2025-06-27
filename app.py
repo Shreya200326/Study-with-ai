@@ -822,7 +822,7 @@ if generate_btn and uploaded_file:
         with st.spinner("📖 Extracting text from PDF..."):
             pdf_text = assistant.extract_pdf_text(uploaded_file)
         
-        if pdf_text:
+    if pdf_text:
             st.success(f"✅ Text extracted successfully! ({len(pdf_text):,} characters)")
             progress_bar.progress(40)
             
