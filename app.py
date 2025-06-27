@@ -215,11 +215,62 @@ def pdf_interface(assistant: AILearningAssistant):
                 st.markdown(flashcards)
                 st.download_button("📥 Download Flashcards", flashcards, "flashcards.md", "text/markdown")
 
+def youtube_interface(assistant: AILearningAssistant):
+    st.markdown('<div class="feature-card fade-in-up">', unsafe_allow_html=True)
+    st.header("🎥 YouTube Video Summarizer")
+
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        video_url = st.text_input(
+            "📎 Enter YouTube Video URL:",
+            placeholder="https://www.youtube.com/watch?v=...",
+            help="Paste any YouTube video URL here"
+        )
+    with col2:
+        generate_btn = st.button("🚀 Generate Summary", key="yt_generate")
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    if generate_btn:
+        if not video_url.strip():
+            st.warning("⚠️ Please enter a YouTube URL")
+            return
+
+        with st.spinner("🔄 Fetching transcript..."):
+            transcript = assistant.get_youtube_transcript(video_url)
+
+        if transcript:
+            st.success(f"✅ Transcript fetched! ({len(transcript):,} characters)")
+
+            with st.spinner("🤖 Generating summary..."):
+                summary = assistant.generate_summary(transcript, "YouTube video")
+
+            if summary:
+                st.subheader("📋 Video Summary")
+                st.markdown(summary)
+
+                st.download_button(
+                    label="📥 Download Summary",
+                    data=summary,
+                    file_name="youtube_summary.md",
+                    mime="text/markdown"
+                )
+        else:
+            st.error("❌ Could not retrieve transcript from video.")
 
 def main():
     st.title("🧠 AI Learning Assistant")
     assistant = AILearningAssistant()
-    pdf_interface(assistant)
+
+    mode = st.radio(
+        "Choose your learning mode:",
+        ["📄 PDF Learning Assistant", "🎥 YouTube Video Summarizer"]
+    )
+
+    if "PDF" in mode:
+        pdf_interface(assistant)
+    else:
+        youtube_interface(assistant)
 
 if __name__ == "__main__":
     main()
