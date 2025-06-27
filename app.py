@@ -877,4 +877,3 @@ def pdf_interface(assistant: AILearningAssistant):
         
 if __name__ == "__main__":
     main()
-```
