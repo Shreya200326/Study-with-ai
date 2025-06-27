@@ -811,7 +811,7 @@ def pdf_interface(assistant: AILearningAssistant):
     if clear_btn:
         st.rerun()
     
-    if generate_btn and uploaded_file:
+if generate_btn and uploaded_file:
         # Progress tracking
         progress_bar = st.progress(0)
         status_text = st.empty()
@@ -829,49 +829,51 @@ def pdf_interface(assistant: AILearningAssistant):
             # Enhanced tabs with better styling
             tab1, tab2, tab3 = st.tabs(["📋 Summary", "❓ MCQs", "🗃️ Flashcards"])
             
-with tab1:
-    st.markdown('<div class="feature-card fade-in-up">', unsafe_allow_html=True)
-    status_text.text("🤖 Generating comprehensive summary...")
-    progress_bar.progress(60)
-    # Don't forget to close the div if you have other content in tab1 after this
-    # st.markdown('</div>', unsafe_allow_html=True) 
+            with tab1:
+                st.markdown('<div class="feature-card fade-in-up">', unsafe_allow_html=True)
+                status_text.text("🤖 Generating comprehensive summary...")
+                progress_bar.progress(60)
+                # Ensure summary generation is within the tab block
+                summary = assistant.generate_summary(pdf_text, "PDF document") 
+                if summary:
+                    st.subheader("📋 Document Summary")
+                    st.markdown(summary)
+                st.markdown('</div>', unsafe_allow_html=True) # Closing div for tab1
+            
+            with tab2:
+                st.markdown('<div class="feature-card fade-in-up">', unsafe_allow_html=True)
+                with st.spinner("🤖 Creating multiple choice questions..."):
+                    mcqs = assistant.generate_mcqs(pdf_text)
 
-with tab2:
-    st.markdown('<div class="feature-card fade-in-up">', unsafe_allow_html=True) # Added here
-    with st.spinner("🤖 Creating multiple choice questions..."):
-        mcqs = assistant.generate_mcqs(pdf_text)
+                st.markdown("### ❓ Multiple Choice Questions")
+                st.markdown(mcqs)
 
-    st.markdown("### ❓ Multiple Choice Questions")
-    st.markdown(mcqs)
+                st.download_button(
+                    label="📥 Download MCQs",
+                    data=mcqs,
+                    file_name="pdf_mcqs.md",
+                    mime="text/markdown"
+                )
+                st.markdown('</div>', unsafe_allow_html=True) # Closing div for tab2
 
-    st.download_button(
-        label="📥 Download MCQs",
-        data=mcqs,
-        file_name="pdf_mcqs.md",
-        mime="text/markdown"
-    )
-    # Don't forget to close the div after all content in tab2
-    # st.markdown('</div>', unsafe_allow_html=True) 
+            with tab3:
+                st.markdown('<div class="feature-card fade-in-up">', unsafe_allow_html=True)
+                with st.spinner("🤖 Generating flashcards..."):
+                    flashcards = assistant.generate_flashcards(pdf_text)
 
-with tab3:
-    st.markdown('<div class="feature-card fade-in-up">', unsafe_allow_html=True) # Added here
-    with st.spinner("🤖 Generating flashcards..."):
-        flashcards = assistant.generate_flashcards(pdf_text)
+                st.markdown("### 🗃️ Study Flashcards")
+                st.markdown(flashcards)
 
-    st.markdown("### 🗃️ Study Flashcards")
-    st.markdown(flashcards)
-
-    st.download_button(
-        label="📥 Download Flashcards",
-        data=flashcards,
-        file_name="pdf_flashcards.md",
-        mime="text/markdown"
-    )
-    # Don't forget to close the div after all content in tab3
-    # st.markdown('</div>', unsafe_allow_html=True) 
-
-   elif generate_btn:
-    st.warning("⚠️ Please upload a PDF file")
-
+                st.download_button(
+                    label="📥 Download Flashcards",
+                    data=flashcards,
+                    file_name="pdf_flashcards.md",
+                    mime="text/markdown"
+                )
+                st.markdown('</div>', unsafe_allow_html=True) # Closing div for tab3
+        # No 'else' or 'elif' here for pdf_text. It means if pdf_text is None, nothing further happens within this 'if' branch.
+    elif generate_btn: # <--- THIS IS THE CORRECTED INDENTATION
+        st.warning("⚠️ Please upload a PDF file")
+        
 if __name__ == "__main__":
     main()
