@@ -1,8 +1,3 @@
-Here’s a professional and structured **README.md** file for your **AI Learning Assistant** project:
-
----
-
-````markdown
 # 🧠 AI Learning Assistant
 
 An intelligent educational web application built with **Streamlit** that helps you learn efficiently from **YouTube videos** and **PDF documents**. Powered by **Google's Gemini AI**, this app generates:
@@ -74,15 +69,6 @@ An intelligent educational web application built with **Streamlit** that helps y
    ```bash
    streamlit run your_script_name.py
    ```
-
----
-
-## 📸 Screenshots
-
-| Mode                            | Screenshot                                          |
-| ------------------------------- | --------------------------------------------------- |
-| YouTube Summary                 | ![YouTube Summary](screenshots/youtube_summary.png) |
-| PDF Summary + MCQs + Flashcards | ![PDF Interface](screenshots/pdf_interface.png)     |
 
 ---
 
