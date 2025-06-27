@@ -4,8 +4,6 @@ import json
 import time
 import re
 from typing import List, Optional
-
-# Third-party imports
 try:
     from youtube_transcript_api import YouTubeTranscriptApi
     import pdfplumber
@@ -14,7 +12,6 @@ except ImportError as e:
     st.error(f"Missing required package: {e}")
     st.stop()
 
-# Configure Streamlit page
 st.set_page_config(
     page_title="AI Learning Assistant",
     page_icon="🫠",
@@ -22,7 +19,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Initialize theme in session state
+
 if 'dark_mode' not in st.session_state:
     st.session_state.dark_mode = False
 
