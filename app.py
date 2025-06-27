@@ -22,40 +22,390 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for better styling
-st.markdown("""
-<style>
-    .main-header {
-        font-size: 2.5rem;
-        font-weight: bold;
-        text-align: center;
-        margin-bottom: 2rem;
-        color: #1f77b4;
-    }
-    .feature-card {
-        background-color: #f0f2f6;
-        padding: 1rem;
-        border-radius: 10px;
-        margin: 1rem 0;
-    }
-    .success-box {
-        background-color: #d4edda;
-        border: 1px solid #c3e6cb;
-        color: #155724;
-        padding: 1rem;
-        border-radius: 5px;
-        margin: 1rem 0;
-    }
-    .error-box {
-        background-color: #f8d7da;
-        border: 1px solid #f5c6cb;
-        color: #721c24;
-        padding: 1rem;
-        border-radius: 5px;
-        margin: 1rem 0;
-    }
-</style>
-""", unsafe_allow_html=True)
+# Initialize theme in session state
+if 'dark_mode' not in st.session_state:
+    st.session_state.dark_mode = False
+
+def apply_custom_styling():
+    """Apply comprehensive custom styling with theme support and cursor effects."""
+    
+    # Determine theme colors
+    if st.session_state.dark_mode:
+        bg_primary = "#0e1117"
+        bg_secondary = "#1a1d26"
+        bg_tertiary = "#262730"
+        text_primary = "#ffffff"
+        text_secondary = "#c5c5c5"
+        accent_color = "#00d4ff"
+        accent_secondary = "#ff6b6b"
+        border_color = "#404040"
+        shadow_color = "rgba(0, 212, 255, 0.3)"
+        glow_color = "rgba(0, 212, 255, 0.15)"
+    else:
+        bg_primary = "#fafafa"
+        bg_secondary = "#ffffff"
+        bg_tertiary = "#f8f9fa"
+        text_primary = "#1a1a1a"
+        text_secondary = "#666666"
+        accent_color = "#4a90ff"
+        accent_secondary = "#ff4757"
+        border_color = "#e1e5e9"
+        shadow_color = "rgba(74, 144, 255, 0.3)"
+        glow_color = "rgba(74, 144, 255, 0.08)"
+    
+    st.markdown(f"""
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        
+        /* Global Variables */
+        :root {{
+            --bg-primary: {bg_primary};
+            --bg-secondary: {bg_secondary};
+            --bg-tertiary: {bg_tertiary};
+            --text-primary: {text_primary};
+            --text-secondary: {text_secondary};
+            --accent-color: {accent_color};
+            --accent-secondary: {accent_secondary};
+            --border-color: {border_color};
+            --shadow-color: {shadow_color};
+            --glow-color: {glow_color};
+        }}
+        
+        /* Cursor Tracking Glow Effect */
+        body {{
+            position: relative;
+            overflow-x: hidden;
+        }}
+        
+        body::before {{
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+                        var(--glow-color) 0%, 
+                        transparent 40%);
+            pointer-events: none;
+            z-index: -1;
+            transition: opacity 0.3s ease;
+        }}
+        
+        /* Base Styling */
+        .stApp {{
+            background: var(--bg-primary);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+        }}
+        
+        .main .block-container {{
+            padding-top: 2rem;
+            padding-bottom: 3rem;
+            max-width: 1200px;
+        }}
+        
+        /* Header Styling */
+        .main-header {{
+            font-family: 'Inter', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 8px var(--shadow-color);
+            letter-spacing: -0.02em;
+        }}
+        
+        .subtitle {{
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            font-weight: 400;
+        }}
+        
+        /* Sidebar Styling */
+        .css-1d391kg {{
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+        }}
+        
+        .css-1d391kg .css-1v0mbdj {{
+            color: var(--text-primary);
+        }}
+        
+        /* Custom Button Styling */
+        .stButton > button {{
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px var(--shadow-color);
+            position: relative;
+            overflow: hidden;
+        }}
+        
+        .stButton > button:hover {{
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--shadow-color);
+        }}
+        
+        .stButton > button:active {{
+            transform: translateY(0);
+        }}
+        
+        .stButton > button::before {{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }}
+        
+        .stButton > button:hover::before {{
+            left: 100%;
+        }}
+        
+        /* Theme Toggle Button */
+        .theme-toggle {{
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px var(--shadow-color);
+        }}
+        
+        .theme-toggle:hover {{
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px var(--shadow-color);
+        }}
+        
+        /* Input Field Styling */
+        .stTextInput > div > div > input {{
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            padding: 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }}
+        
+        .stTextInput > div > div > input:focus {{
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px var(--glow-color);
+            outline: none;
+        }}
+        
+        /* File Uploader Styling */
+        .stFileUploader > div {{
+            background: var(--bg-secondary);
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }}
+        
+        .stFileUploader > div:hover {{
+            border-color: var(--accent-color);
+            background: var(--bg-tertiary);
+        }}
+        
+        /* Tab Styling */
+        .stTabs [data-baseweb="tab-list"] {{
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+        }}
+        
+        .stTabs [data-baseweb="tab"] {{
+            background: transparent;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }}
+        
+        .stTabs [aria-selected="true"] {{
+            background: var(--accent-color) !important;
+            color: white !important;
+        }}
+        
+        /* Card Styling */
+        .feature-card {{
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 4px 20px var(--shadow-color);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }}
+        
+        .feature-card::before {{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
+        }}
+        
+        .feature-card:hover {{
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px var(--shadow-color);
+        }}
+        
+        /* Success/Error Messages */
+        .stSuccess > div {{
+            background: linear-gradient(135deg, #00c851, #007e33);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+        }}
+        
+        .stError > div {{
+            background: linear-gradient(135deg, #ff4444, #cc0000);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+        }}
+        
+        .stWarning > div {{
+            background: linear-gradient(135deg, #ffbb33, #ff8800);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+        }}
+        
+        /* Spinner Styling */
+        .stSpinner > div {{
+            border-top-color: var(--accent-color) !important;
+        }}
+        
+        /* Download Button */
+        .stDownloadButton > button {{
+            background: var(--bg-secondary);
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }}
+        
+        .stDownloadButton > button:hover {{
+            background: var(--accent-color);
+            color: white;
+            transform: translateY(-2px);
+        }}
+        
+        /* Radio Button Styling */
+        .stRadio > div {{
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1rem;
+        }}
+        
+        /* Markdown Content */
+        .stMarkdown {{
+            color: var(--text-primary);
+        }}
+        
+        .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {{
+            color: var(--text-primary);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }}
+        
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {{
+            width: 8px;
+        }}
+        
+        ::-webkit-scrollbar-track {{
+            background: var(--bg-primary);
+        }}
+        
+        ::-webkit-scrollbar-thumb {{
+            background: var(--accent-color);
+            border-radius: 4px;
+        }}
+        
+        ::-webkit-scrollbar-thumb:hover {{
+            background: var(--accent-secondary);
+        }}
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {{
+            .main-header {{
+                font-size: 2.5rem;
+            }}
+            
+            .theme-toggle {{
+                top: 0.5rem;
+                right: 0.5rem;
+            }}
+            
+            .feature-card {{
+                padding: 1.5rem;
+            }}
+        }}
+        
+        /* Animation Keyframes */
+        @keyframes fadeInUp {{
+            from {{
+                opacity: 0;
+                transform: translateY(30px);
+            }}
+            to {{
+                opacity: 1;
+                transform: translateY(0);
+            }}
+        }}
+        
+        .fade-in-up {{
+            animation: fadeInUp 0.6s ease-out;
+        }}
+    </style>
+    
+    <script>
+        // Cursor tracking for glow effect
+        document.addEventListener('mousemove', (e) => {{
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            document.documentElement.style.setProperty('--mouse-x', x + '%');
+            document.documentElement.style.setProperty('--mouse-y', y + '%');
+        }});
+    </script>
+    """, unsafe_allow_html=True)
+
+# Apply the styling
+apply_custom_styling()
 
 class AILearningAssistant:
     """Main class for the AI Learning Assistant application."""
@@ -295,18 +645,49 @@ class AILearningAssistant:
             st.error(f"❌ Error extracting PDF text: {str(e)}")
             return None
 
+def create_theme_toggle():
+    """Create a theme toggle button."""
+    theme_icon = "🌙" if not st.session_state.dark_mode else "☀️"
+    theme_text = "Dark Mode" if not st.session_state.dark_mode else "Light Mode"
+    
+    st.markdown(f"""
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <span style="font-size: 1.5rem;">{theme_icon}</span>
+    </div>
+    
+    <script>
+        function toggleTheme() {{
+            // This will trigger a rerun with the theme toggle
+            const event = new CustomEvent('streamlit:theme-toggle');
+            window.parent.document.dispatchEvent(event);
+        }}
+    </script>
+    """, unsafe_allow_html=True)
+
 def main():
     """Main application function."""
     # Initialize the assistant
     assistant = AILearningAssistant()
     
-    # Header
-    st.markdown('<h1 class="main-header">🧠 AI Learning Assistant</h1>', unsafe_allow_html=True)
-    st.markdown("Transform YouTube videos and PDFs into structured learning materials using AI")
+    # Theme toggle button
+    col1, col2, col3 = st.columns([1, 1, 1])
+    with col3:
+        if st.button("🌙 Toggle Theme" if not st.session_state.dark_mode else "☀️ Toggle Theme", key="theme_toggle"):
+            st.session_state.dark_mode = not st.session_state.dark_mode
+            st.rerun()
     
-    # Sidebar navigation
+    # Header with enhanced styling
+    st.markdown('<div class="fade-in-up">', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header">🧠 AI Learning Assistant</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="subtitle">Transform YouTube videos and PDFs into structured learning materials using AI</p>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    # Sidebar navigation with enhanced styling
     with st.sidebar:
+        st.markdown('<div class="fade-in-up">', unsafe_allow_html=True)
         st.title("📚 Navigation")
+        
+        # Enhanced radio button styling
         mode = st.radio(
             "Choose your learning mode:",
             ["🎥 YouTube Video Summarizer", "📄 PDF Learning Assistant"],
@@ -314,15 +695,22 @@ def main():
         )
         
         st.markdown("---")
+        
+        # Feature cards in sidebar
+        st.markdown('<div class="feature-card">', unsafe_allow_html=True)
         st.markdown("### 💡 Tips")
         if "YouTube" in mode:
-            st.markdown("• Paste any YouTube URL\n• Works with videos that have captions\n• Generates comprehensive summaries")
+            st.markdown("• Paste any YouTube URL  \n• Works with videos that have captions  \n• Generates comprehensive summaries")
         else:
-            st.markdown("• Upload PDF documents\n• Get summaries, MCQs, and flashcards\n• Perfect for study materials")
+            st.markdown("• Upload PDF documents  \n• Get summaries, MCQs, and flashcards  \n• Perfect for study materials")
+        st.markdown('</div>', unsafe_allow_html=True)
         
-        st.markdown("---")
+        st.markdown('<div class="feature-card">', unsafe_allow_html=True)
         st.markdown("### ⚡ Features")
-        st.markdown("• AI-powered content analysis\n• Structured learning materials\n• Export and download options")
+        st.markdown("• AI-powered content analysis  \n• Structured learning materials  \n• Export and download options  \n• Dynamic themes & modern UI")
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        st.markdown('</div>', unsafe_allow_html=True)
     
     # Main content area
     if "YouTube" in mode:
@@ -330,12 +718,18 @@ def main():
     else:
         pdf_interface(assistant)
     
-    # Footer
+    # Footer with enhanced styling
     st.markdown("---")
-    st.markdown("Built with ❤️ using Streamlit and Google Gemini AI")
+    st.markdown("""
+    <div style="text-align: center; padding: 2rem 0; color: var(--text-secondary);">
+        <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">Built with ❤️ using Streamlit and Google Gemini AI</p>
+        <p style="font-size: 0.9rem; opacity: 0.8;">Featuring dynamic themes, cursor effects, and modern UI design</p>
+    </div>
+    """, unsafe_allow_html=True)
 
 def youtube_interface(assistant: AILearningAssistant):
-    """YouTube video summarizer interface."""
+    """YouTube video summarizer interface with enhanced styling."""
+    st.markdown('<div class="feature-card fade-in-up">', unsafe_allow_html=True)
     st.header("🎥 YouTube Video Summarizer")
     
     col1, col2 = st.columns([3, 1])
@@ -349,8 +743,10 @@ def youtube_interface(assistant: AILearningAssistant):
     
     with col2:
         st.markdown("<br>", unsafe_allow_html=True)  # Spacing
-        generate_btn = st.button("🚀 Generate Summary", type="primary")
-        clear_btn = st.button("🗑️ Clear")
+        generate_btn = st.button("🚀 Generate Summary", type="primary", key="yt_generate")
+        clear_btn = st.button("🗑️ Clear", key="yt_clear")
+    
+    st.markdown('</div>', unsafe_allow_html=True)
     
     if clear_btn:
         st.rerun()
@@ -360,46 +756,151 @@ def youtube_interface(assistant: AILearningAssistant):
             st.warning("⚠️ Please enter a YouTube URL")
             return
         
+        # Progress container with enhanced styling
+        progress_container = st.empty()
+        
         with st.spinner("🔄 Fetching video transcript..."):
             transcript = assistant.get_youtube_transcript(video_url)
         
         if transcript:
-            st.success(f"✅ Transcript fetched! ({len(transcript)} characters)")
+            st.success(f"✅ Transcript fetched! ({len(transcript):,} characters)")
             
             with st.spinner("🤖 Generating AI summary..."):
                 summary = assistant.generate_summary(transcript, "YouTube video")
             
             if summary:
+                st.markdown('<div class="feature-card fade-in-up">', unsafe_allow_html=True)
                 st.subheader("📋 Video Summary")
                 st.markdown(summary)
+                st.markdown('</div>', unsafe_allow_html=True)
                 
-                # Download option
-                st.download_button(
-                    label="📥 Download Summary",
-                    data=summary,
-                    file_name="youtube_summary.md",
-                    mime="text/markdown"
-                )
+                # Enhanced download section
+                col1, col2, col3 = st.columns([1, 1, 1])
+                with col2:
+                    st.download_button(
+                        label="📥 Download Summary",
+                        data=summary,
+                        file_name="youtube_summary.md",
+                        mime="text/markdown",
+                        use_container_width=True
+                    )
     
     elif generate_btn:
         st.warning("⚠️ Please enter a YouTube URL")
 
 def pdf_interface(assistant: AILearningAssistant):
-    """PDF learning assistant interface."""
+    """PDF learning assistant interface with enhanced styling."""
+    st.markdown('<div class="feature-card fade-in-up">', unsafe_allow_html=True)
     st.header("📄 PDF Learning Assistant")
     
-    # File upload
+    # Enhanced file upload
     uploaded_file = st.file_uploader(
-        "📁 Upload PDF Document:",
+        "📁 Upload Your PDF Document:",
         type=['pdf'],
-        help="Upload a PDF file to generate learning materials"
+        help="Upload a PDF file to generate comprehensive learning materials"
     )
     
     col1, col2 = st.columns([1, 1])
     with col1:
-        generate_btn = st.button("🚀 Generate Learning Materials", type="primary")
+        generate_btn = st.button("🚀 Generate Learning Materials", type="primary", key="pdf_generate")
     with col2:
-        clear_btn = st.button("🗑️ Clear All")
+        clear_btn = st.button("🗑️ Clear All", key="pdf_clear")
+    
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    if clear_btn:
+        st.rerun()
+    
+    if generate_btn and uploaded_file:
+        # Progress tracking
+        progress_bar = st.progress(0)
+        status_text = st.empty()
+        
+        status_text.text("📖 Extracting text from PDF...")
+        progress_bar.progress(20)
+        
+        with st.spinner("📖 Extracting text from PDF..."):
+            pdf_text = assistant.extract_pdf_text(uploaded_file)
+        
+        if pdf_text:
+            st.success(f"✅ Text extracted successfully! ({len(pdf_text):,} characters)")
+            progress_bar.progress(40)
+            
+            # Enhanced tabs with better styling
+            tab1, tab2, tab3 = st.tabs(["📋 Summary", "❓ MCQs", "🗃️ Flashcards"])
+            
+            with tab1:
+                st.markdown('<div class="feature-card fade-in-up">', unsafe_allow_html=True)
+                status_text.text("🤖 Generating comprehensive summary...")
+                progress_bar.progress(60)
+                
+                with st.spinner("🤖 Generating comprehensive summary..."):
+                    summary = assistant.generate_summary(pdf_text, "PDF document")
+                
+                st.markdown("### 📄 Document Summary")
+                st.markdown(summary)
+                
+                col1, col2, col3 = st.columns([1, 1, 1])
+                with col2:
+                    st.download_button(
+                        label="📥 Download Summary",
+                        data=summary,
+                        file_name="pdf_summary.md",
+                        mime="text/markdown",
+                        use_container_width=True
+                    )
+                st.markdown('</div>', unsafe_allow_html=True)
+            
+            with tab2:
+                st.markdown('<div class="feature-card fade-in-up">', unsafe_allow_html=True)
+                status_text.text("🤖 Creating multiple choice questions...")
+                progress_bar.progress(80)
+                
+                with st.spinner("🤖 Creating multiple choice questions..."):
+                    mcqs = assistant.generate_mcqs(pdf_text)
+                
+                st.markdown("### ❓ Multiple Choice Questions")
+                st.markdown(mcqs)
+                
+                col1, col2, col3 = st.columns([1, 1, 1])
+                with col2:
+                    st.download_button(
+                        label="📥 Download MCQs",
+                        data=mcqs,
+                        file_name="pdf_mcqs.md",
+                        mime="text/markdown",
+                        use_container_width=True
+                    )
+                st.markdown('</div>', unsafe_allow_html=True)
+            
+            with tab3:
+                st.markdown('<div class="feature-card fade-in-up">', unsafe_allow_html=True)
+                status_text.text("🤖 Generating study flashcards...")
+                progress_bar.progress(100)
+                
+                with st.spinner("🤖 Generating study flashcards..."):
+                    flashcards = assistant.generate_flashcards(pdf_text)
+                
+                st.markdown("### 🗃️ Study Flashcards")
+                st.markdown(flashcards)
+                
+                col1, col2, col3 = st.columns([1, 1, 1])
+                with col2:
+                    st.download_button(
+                        label="📥 Download Flashcards",
+                        data=flashcards,
+                        file_name="pdf_flashcards.md",
+                        mime="text/markdown",
+                        use_container_width=True
+                    )
+                st.markdown('</div>', unsafe_allow_html=True)
+            
+            # Clear progress indicators
+            progress_bar.empty()
+            status_text.empty()
+    
+    elif generate_btn:
+        st.warning("⚠️ Please upload a PDF file first") st.button("🗑️ Clear All")
     
     if clear_btn:
         st.rerun()
