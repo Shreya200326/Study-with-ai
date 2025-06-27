@@ -870,7 +870,7 @@ with tab3:
     # Don't forget to close the div after all content in tab3
     # st.markdown('</div>', unsafe_allow_html=True) 
 
-elif generate_btn:
+   elif generate_btn:
     st.warning("⚠️ Please upload a PDF file")
 
 if __name__ == "__main__":
