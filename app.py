@@ -1,3 +1,4 @@
+```python
 import streamlit as st
 import os
 import json
@@ -85,8 +86,8 @@ def apply_custom_styling():
             width: 100%;
             height: 100%;
             background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
-                        var(--glow-color) 0%, 
-                        transparent 40%);
+                                var(--glow-color) 0%, 
+                                transparent 40%);
             pointer-events: none;
             z-index: -1;
             transition: opacity 0.3s ease;
@@ -811,7 +812,8 @@ def pdf_interface(assistant: AILearningAssistant):
     if clear_btn:
         st.rerun()
     
-if generate_btn and uploaded_file:
+    # Corrected indentation for the main logic when generate_btn is clicked
+    if generate_btn and uploaded_file:
         # Progress tracking
         progress_bar = st.progress(0)
         status_text = st.empty()
@@ -822,7 +824,7 @@ if generate_btn and uploaded_file:
         with st.spinner("📖 Extracting text from PDF..."):
             pdf_text = assistant.extract_pdf_text(uploaded_file)
         
-    if pdf_text:
+        if pdf_text:
             st.success(f"✅ Text extracted successfully! ({len(pdf_text):,} characters)")
             progress_bar.progress(40)
             
@@ -871,9 +873,9 @@ if generate_btn and uploaded_file:
                     mime="text/markdown"
                 )
                 st.markdown('</div>', unsafe_allow_html=True) # Closing div for tab3
-        # No 'else' or 'elif' here for pdf_text. It means if pdf_text is None, nothing further happens within this 'if' branch.
-    elif generate_btn: # <--- THIS IS THE CORRECTED INDENTATION
+    elif generate_btn: # This 'elif' needs to align with the 'if generate_btn and uploaded_file:'
         st.warning("⚠️ Please upload a PDF file")
         
 if __name__ == "__main__":
     main()
+```
